@@ -6,14 +6,14 @@ A browser-first free TTS recovery page that keeps the original MyanArts TTS Stud
 
 - Default voice: `ခွန်` under `ကျည်ကွန်ဒို`.
 - Text input: intentionally blank on first load so the user can enter their own script.
-- Default Fast settings: Speed `+30%`, Pitch `+10 Hz`.
+- Default Fast settings: Speed `+30%`, Pitch `+5 Hz`.
 - SRT type: TikTok by default; YouTube is selectable.
 
 ## Voice routing
 
 - `Thiha` and `Nilar` retain the original Azure AI / Server 1 route and ask for a PIN only at generation time. The PIN stays in browser memory and is never persisted.
 - The original Fast Direct aliases are restored in the old UI under `ကျည်ကွန်ဒို`: `ခွန်` maps to `my-MM-ThihaNeural`, and `နန်း` maps to `my-MM-NilarNeural`.
-- `ခွန်` and `နန်း` use the active replacement EdgeTTS service at `https://myanarts-edgetts-95d9.onrender.com`, require no Server 1 PIN, and select Speed `+30%` / Pitch `+10 Hz` by default.
+- `ခွန်` and `နန်း` use the active replacement EdgeTTS service at `https://myanarts-edgetts-95d9.onrender.com`, require no Server 1 PIN, and select Speed `+30%` / Pitch `+5 Hz` by default.
 - Generate requests are local-browser initiated. Text is split into ordered chunks, failed chunks retry independently, and the final MP3/SRT stays in the browser.
 
 ## SRT verification
@@ -36,7 +36,7 @@ The old MyanArts UI was rebuilt on the published free link and checked in a real
 ```text
 Initial voice: ခွန် selected
 Initial text: empty
-Fast preset: Speed +30%, Pitch +10 Hz
+Fast preset: Speed +30%, Pitch +5 Hz
 SRT selector: TikTok / YouTube
 ခွန် browser Generate: COMPLETE, MP3 + SRT controls visible
 နန်း browser Generate: COMPLETE, MP3 + SRT controls visible
