@@ -41,6 +41,8 @@ Fast preset: Speed +30%, Pitch +5 Hz
 SRT selector: TikTok / YouTube
 ခွန် browser Generate: COMPLETE, MP3 + SRT controls visible
 နန်း browser Generate: COMPLETE, MP3 + SRT controls visible
+Two-line example live test: PASS — `ထိုရွာတွင် ဉာဏ်ကြီးသော` / `သူတော်ကောင်းတစ်ဦး နေထိုင်ပါသည်။`
+Two-line test audio/SRT end: PASS — 2.976s / `00:00:02,976`
 ```
 
 The EdgeTTS service live checks returned HTTP 200 `audio/mpeg` for both `my-MM-ThihaNeural` and `my-MM-NilarNeural`. SRT final timing is tied to measured merged audio duration.
