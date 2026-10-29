@@ -18,10 +18,10 @@ A browser-first free TTS recovery page that keeps the original MyanArts TTS Stud
 
 ## SRT verification
 
-- SRT cues preserve the complete source text; long cues are wrapped by Unicode code points without dropping text.
-- TikTok and YouTube line-width modes are applied to generated cues.
+- SRT cues preserve the complete source text and split at Myanmar sentence punctuation/whitespace boundaries.
+- The original MyanArts parity targets are restored: TikTok phrase segments are up to 53 characters and YouTube phrase segments are up to 80 characters.
 - Cue order follows the ordered audio chunks.
-- Chunk boundaries use measured audio durations. Where provider word-boundary metadata exists, those real boundaries are used; the Fast HTTP endpoint does not expose word boundaries, so its SRT uses measured chunk-level cues rather than invented word timing.
+- Chunk boundaries use measured audio durations. Where provider word-boundary metadata exists, those real boundaries are used; the Fast HTTP endpoint does not expose word boundaries, so its SRT uses the original MyanArts phrase segmentation with proportional timing rather than invented word timing.
 - The final SRT cue is forced to the measured merged MP3 duration. The Server 1 path also scales its cue timeline to the measured merged duration before closing the final cue.
 
 ## Verification
