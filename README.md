@@ -21,6 +21,7 @@ A browser-first free TTS recovery page that keeps the original MyanArts TTS Stud
 - SRT cues preserve the complete source text and split at Myanmar sentence punctuation/whitespace boundaries.
 - The original MyanArts parity targets are restored: TikTok phrase segments are up to 53 characters and YouTube phrase segments are up to 80 characters.
 - Long cues are automatically split into readable upper/lower subtitle lines at a safe whitespace boundary; the example `ထိုရွာတွင် ဉာဏ်ကြီးသောသူတော်ကောင်းတစ်ဦး နေထိုင်ပါသည်။` becomes two lines without dropping text.
+- Burmese sentence punctuation stays attached to the preceding phrase, so `သေးငယ်သောရွာလေးတစ်ရွာ ရှိပါသည်။` becomes `သေးငယ်သောရွာလေးတစ်ရွာ` / `ရှိပါသည်။`, never `ရှိပါသည်` / `။`.
 - Cue order follows the ordered audio chunks.
 - Chunk boundaries use measured audio durations. Where provider word-boundary metadata exists, those real boundaries are used; the Fast HTTP endpoint does not expose word boundaries, so its SRT uses the original MyanArts phrase segmentation with proportional timing rather than invented word timing.
 - The final SRT cue is forced to the measured merged MP3 duration. The Server 1 path also scales its cue timeline to the measured merged duration before closing the final cue.
@@ -29,7 +30,7 @@ A browser-first free TTS recovery page that keeps the original MyanArts TTS Stud
 
 ```text
 npm run build  PASS
-npm test       PASS — 4 files, 13 tests
+npm test       PASS — 4 files, 14 tests
 ```
 
 The old MyanArts UI was rebuilt on the published free link and checked in a real browser:
