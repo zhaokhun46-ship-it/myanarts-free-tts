@@ -2,32 +2,47 @@
 
 A browser-first free TTS recovery page that keeps the original MyanArts TTS Studio interaction pattern: Myanmar Text Input, grouped voice cards, Speed/Pitch/Volume Booster controls, Output Filename, Generate AI Speech, AI preview, Browser listen, generated audio, MP3/SRT downloads, and measured timing status.
 
+## Current defaults
+
+- Default voice: `ခွန်` under `ကျည်ကွန်ဒို`.
+- Text input: intentionally blank on first load so the user can enter their own script.
+- Default Fast settings: Speed `+30%`, Pitch `+10 Hz`.
+- SRT type: TikTok by default; YouTube is selectable.
+
 ## Voice routing
 
-- `Thiha` (default) and `Nilar` retain the original Azure AI / Server 1 route and ask for a PIN only at generation time. The PIN stays in browser memory and is never persisted.
-- The original Fast Direct aliases are restored in the old UI under `ကျည်ကွမ်ဒို`: `ခွန်` maps to `my-MM-ThihaNeural`, and `နန်း` maps to `my-MM-NilarNeural`.
+- `Thiha` and `Nilar` retain the original Azure AI / Server 1 route and ask for a PIN only at generation time. The PIN stays in browser memory and is never persisted.
+- The original Fast Direct aliases are restored in the old UI under `ကျည်ကွန်ဒို`: `ခွန်` maps to `my-MM-ThihaNeural`, and `နန်း` maps to `my-MM-NilarNeural`.
 - `ခွန်` and `နန်း` use the active replacement EdgeTTS service at `https://myanarts-edgetts-95d9.onrender.com`, require no Server 1 PIN, and select Speed `+30%` / Pitch `+10 Hz` by default.
 - Generate requests are local-browser initiated. Text is split into ordered chunks, failed chunks retry independently, and the final MP3/SRT stays in the browser.
+
+## SRT verification
+
+- SRT cues preserve the complete source text; long cues are wrapped by Unicode code points without dropping text.
+- TikTok and YouTube line-width modes are applied to generated cues.
+- Cue order follows the ordered audio chunks.
+- Chunk boundaries use measured audio durations. Where provider word-boundary metadata exists, those real boundaries are used; the Fast HTTP endpoint does not expose word boundaries, so its SRT uses measured chunk-level cues rather than invented word timing.
+- The final SRT cue is forced to the measured merged MP3 duration. The Server 1 path also scales its cue timeline to the measured merged duration before closing the final cue.
 
 ## Verification
 
 ```text
 npm run build  PASS
-npm test       PASS — 4 files, 10 tests
+npm test       PASS — 4 files, 12 tests
 ```
 
 The old MyanArts UI was rebuilt on the published free link and checked in a real browser:
 
 ```text
-Default UI voice: Thiha
-Fast card: ကျည်ကွန်ဒို · ခွန် / နန်း
+Initial voice: ခွန် selected
+Initial text: empty
 Fast preset: Speed +30%, Pitch +10 Hz
-Fast PIN field: not required
+SRT selector: TikTok / YouTube
 ခွန် browser Generate: COMPLETE, MP3 + SRT controls visible
 နန်း browser Generate: COMPLETE, MP3 + SRT controls visible
 ```
 
-The EdgeTTS service live checks returned HTTP 200 `audio/mpeg` for both `my-MM-ThihaNeural` and `my-MM-NilarNeural`. SRT final timing is tied to measured merged audio duration. Fast-voice SRT uses measured chunk-level cues because the HTTP service does not expose word boundaries.
+The EdgeTTS service live checks returned HTTP 200 `audio/mpeg` for both `my-MM-ThihaNeural` and `my-MM-NilarNeural`. SRT final timing is tied to measured merged audio duration.
 
 ## Limits
 
