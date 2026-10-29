@@ -30,7 +30,7 @@ A browser-first free TTS recovery page that keeps the original MyanArts TTS Stud
 
 ```text
 npm run build  PASS
-npm test       PASS — 4 files, 14 tests
+npm test       PASS — 4 files, 15 tests
 ```
 
 The old MyanArts UI was rebuilt on the published free link and checked in a real browser:
