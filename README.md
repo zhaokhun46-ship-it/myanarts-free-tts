@@ -56,4 +56,4 @@ The EdgeTTS service live checks returned HTTP 200 `audio/mpeg` for both `my-MM-T
 
 ## Limits
 
-The input counter remains at 100,000 Unicode characters, but the free browser path has practical memory, sleep, rate-limit, and request-duration limits. The `Browser` button is intentionally listen-only and does not pretend to create an MP3. This recovery link does not restore the suspended `myanarts.onrender.com` Web/Worker or Auto Recap.
+The input counter accepts 100,000 Unicode characters. Paste handling is explicit rather than relying on native textarea truncation, so a full Myanmar clipboard payload is inserted and counted exactly (`100,000 / 100,000` verified in the browser). The free browser path still has practical memory, sleep, rate-limit, and request-duration limits. The `Browser` button is intentionally listen-only and does not pretend to create an MP3. This recovery link does not restore the suspended `myanarts.onrender.com` Web/Worker or Auto Recap.
