@@ -36,7 +36,7 @@ A browser-first free TTS recovery page that keeps the original MyanArts TTS Stud
 npm run build  PASS
 npm test       PASS — 4 files, 17 tests
 
-Latest live browser verification: `အရက်အရက်အရက်အရက်အရက်အရက်အရက်ကို မသောက်သုံးသင့်ပါ။` rendered as whole-word lines (`အရက်အရက်အရက်အရက်အရက်` / `အရက်အရက်ကို မသောက်သုံးသင့်ပါ။`); measured audio `3.096s` and SRT final end `00:00:03,096`.
+Latest live browser verification: `ကျည်ကွမ်ဒို/ခွန်` rendered the test as whole-word lines (`အရက်အရက်အရက်အရက်အရက်` / `အရက်အရက်ကို မသောက်သုံးသင့်ပါ။`); measured audio `3.096s` and SRT final end `00:00:03,096`. `Azure AI/Thiha` measured `2.592s` with final SRT `00:00:02,592`, and restored v1 `AI မြန်မာ/Elias` measured `2.580s` with final SRT `00:00:02,580`; all three runs passed word-safe rendering and had no generation error.
 ```
 
 The old MyanArts UI was rebuilt on the published free link and checked in a real browser:
