@@ -15,6 +15,7 @@ A browser-first free TTS recovery page that keeps the original MyanArts TTS Stud
 - The original Fast Direct aliases are restored in the old UI under `ကျည်ကွန်ဒို`: `ခွန်` maps to `my-MM-ThihaNeural`, and `နန်း` maps to `my-MM-NilarNeural`.
 - `ခွန်` and `နန်း` use the active replacement EdgeTTS service at `https://myanarts-edgetts-95d9.onrender.com`, require no Server 1 PIN, and select Speed `+30%` / Pitch `+5 Hz` by default.
 - Generate requests are local-browser initiated. Text is split into ordered chunks, failed chunks retry independently, and the final MP3/SRT stays in the browser.
+- Standalone Myanmar and Arabic numerals are expanded for TTS using the original MyanArts number rules: `၁၀,၀၀၀` / `10,000` → `တစ်သောင်း`, and `၁,၀၀၀` / `1,000` → `တစ်ထောင်`. The input field and subtitles retain the exact original digits; embedded identifiers such as `A123` are not rewritten.
 
 ## SRT verification
 
@@ -34,7 +35,7 @@ A browser-first free TTS recovery page that keeps the original MyanArts TTS Stud
 
 ```text
 npm run build  PASS
-npm test       PASS — 6 files, 35 tests
+  npm test       PASS — 7 files, 43 tests
 
 Live browser test of compact TikTok lines on release `e80ead9`: short Khun MP3 generated successfully, the two-line Burmese example rendered correctly, and the SRT final timestamp exactly matched the measured audio duration. Existing real-generation checks confirmed Azure AI Thiha also produces MP3/SRT with source text preserved.
 Two-row regression check: `မြစ်ကမ်းဘေးတွင် ဝေးလံသောတောင်ကြောပေါ်တွင်` stays within two lines, keeps every source character, and does not split Burmese words; both timed and estimated static SRT paths are covered by tests.
