@@ -19,8 +19,8 @@ A browser-first free TTS recovery page that keeps the original MyanArts TTS Stud
 ## SRT verification
 
 - SRT cues preserve the complete source text and split at Myanmar sentence punctuation/whitespace boundaries.
-- The original MyanArts parity targets are restored: TikTok phrase segments are up to 53 characters and YouTube phrase segments are up to 80 characters.
-- Long cues are automatically split into readable upper/lower subtitle lines at a safe whitespace boundary; the example `ထိုရွာတွင် ဉာဏ်ကြီးသောသူတော်ကောင်းတစ်ဦး နေထိုင်ပါသည်။` becomes two lines without dropping text.
+- Subtitle cues are shorter: up to 44 characters for TikTok and 60 for YouTube. Rendered text rows target at most 22 characters for TikTok and 30 for YouTube.
+- Long cues are automatically split into readable lines at whitespace first, then safe Myanmar word boundaries. A single indivisible word is kept intact rather than split mid-word.
 - Burmese sentence punctuation stays attached to the preceding phrase, so `သေးငယ်သောရွာလေးတစ်ရွာ ရှိပါသည်။` becomes `သေးငယ်သောရွာလေးတစ်ရွာ` / `ရှိပါသည်။`, never `ရှိပါသည်` / `။`.
 - Burmese word boundaries are protected with `Intl.Segmenter("my", { granularity: "word" })`; words such as `အရက်` are never rendered as `အရ` / `က်`.
 - Every generated result validates ordered cue times and that the last SRT end equals the measured MP3 duration exactly. A provider-reported first-word offset is retained when the audio contains leading silence.
@@ -34,9 +34,9 @@ A browser-first free TTS recovery page that keeps the original MyanArts TTS Stud
 
 ```text
 npm run build  PASS
-npm test       PASS — 6 files, 26 tests
+npm test       PASS — 6 files, 30 tests
 
-Earlier live browser tests confirmed whole-word wrapping for `အရက်`, with MP3 and final-SRT durations matching. The updated provider-timed browser flow is being checked separately below.
+Live browser test of compact TikTok lines on release `e80ead9`: short Khun MP3 generated successfully, the two-line Burmese example rendered correctly, and the SRT final timestamp exactly matched the measured audio duration. Existing real-generation checks confirmed Azure AI Thiha also produces MP3/SRT with source text preserved.
 ```
 
 The old MyanArts UI was rebuilt on the published free link and checked in a real browser:
@@ -48,11 +48,13 @@ Fast preset: Speed +30%, Pitch +5 Hz
 SRT selector: TikTok / YouTube
 ခွန် browser Generate: COMPLETE, MP3 + SRT controls visible
 နန်း browser Generate: COMPLETE, MP3 + SRT controls visible
-Two-line example live test: PASS — `ထိုရွာတွင် ဉာဏ်ကြီးသော` / `သူတော်ကောင်းတစ်ဦး နေထိုင်ပါသည်။`
-Two-line test audio/SRT end: PASS — 2.976s / `00:00:02,976`
+Compact-line live test: PASS — `သေးငယ်သောရွာလေးတစ်ရွာ` / `ရှိပါသည်။` (21 and 9 characters)
+Compact-line test audio/SRT end: PASS — 2.184s / `00:00:02,184`
 ```
 
 The deployed EdgeTTS service commit `f058db8` returned HTTP 200 from `/api/speech-with-timing`, including seven ordered Thiha word-boundary events and valid MP3 bytes. The live response included CORS permission for this static Studio origin. The sample's measured MP3 duration was `6,240 ms`; the last provider word ended at `5,608 ms` (the final SRT caption still closes at the measured audio end to keep the prior exact-duration contract).
+
+The latest live Studio run measured the Khun MP3 at `7,416 ms`; SRT also ended at `7,416 ms`, with the source text preserved and `အရက်` intact. The Azure AI Thiha run measured `6,606 ms`; SRT ended at `6,606 ms`, restored sentence punctuation omitted from provider cue text, and preserved the complete source wording. Both audio elements loaded to `readyState=4` in the browser.
 
 ## Limits
 
