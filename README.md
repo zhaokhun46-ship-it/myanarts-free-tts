@@ -19,10 +19,9 @@ A browser-first free TTS recovery page that keeps the original MyanArts TTS Stud
 
 ## SRT verification
 
-- SRT cues preserve the complete source text and split at Myanmar sentence punctuation/whitespace boundaries.
-- Subtitle cues are shorter: up to 44 characters for TikTok and 60 for YouTube. Each exported caption cue is limited to a maximum of two text rows; the formatter selects one balanced, safe Myanmar word boundary instead of greedily creating a third row.
-- TikTok rows target 22 characters and YouTube rows 30 where possible; the two-row limit and whole-word preservation take priority if the text cannot satisfy both width targets.
-- Burmese sentence punctuation stays attached to the preceding phrase, so `သေးငယ်သောရွာလေးတစ်ရွာ ရှိပါသည်။` becomes `သေးငယ်သောရွာလေးတစ်ရွာ` / `ရှိပါသည်။`, never `ရှိပါသည်` / `။`.
+- SRT cues preserve the complete source wording and split only at existing whitespace/sentence boundaries; each cue contains exactly one subtitle text row.
+- Captions are short: TikTok targets at most 25 Unicode code points per cue and YouTube at most 30. A single Burmese word longer than the target remains intact on one row rather than being split or dropped.
+- Sentence punctuation stays attached to the preceding cue, so `သေးငယ်သောရွာလေးတစ်ရွာ ရှိပါသည်။` becomes separate single-line cues `သေးငယ်သောရွာလေးတစ်ရွာ` and `ရှိပါသည်။`.
 - Burmese word boundaries are protected with `Intl.Segmenter("my", { granularity: "word" })`; words such as `အရက်` are never rendered as `အရ` / `က်`.
 - Every generated result validates ordered cue times and that the last SRT end equals the measured MP3 duration exactly. A provider-reported first-word offset is retained when the audio contains leading silence.
 - The v1 `AI မြန်မာ` group is restored with six Server 1 voices: Elias, Qianluo, Dama, Sofia, Muyao, and Faisal. They keep the v1 `+10%` speed / `0Hz` pitch defaults and require the user-entered Server 1 PIN in browser memory only.
@@ -34,11 +33,10 @@ A browser-first free TTS recovery page that keeps the original MyanArts TTS Stud
 ## Verification
 
 ```text
-npm run build  PASS
-  npm test       PASS — 7 files, 43 tests
+  npm run build  PASS
+  npm test       PASS — 7 files, 44 tests
 
-Live browser test of compact TikTok lines on release `e80ead9`: short Khun MP3 generated successfully, the two-line Burmese example rendered correctly, and the SRT final timestamp exactly matched the measured audio duration. Existing real-generation checks confirmed Azure AI Thiha also produces MP3/SRT with source text preserved.
-Two-row regression check: `မြစ်ကမ်းဘေးတွင် ဝေးလံသောတောင်ကြောပေါ်တွင်` stays within two lines, keeps every source character, and does not split Burmese words; both timed and estimated static SRT paths are covered by tests.
+Live browser test of compact TikTok lines on release `e80ead9`: short Khun MP3 generated successfully and the SRT final timestamp exactly matched measured audio duration. The one-line format is covered by timed-provider and estimated-timing SRT tests, including the attached sample pattern and exact source-text preservation.
 ```
 
 The old MyanArts UI was rebuilt on the published free link and checked in a real browser:
