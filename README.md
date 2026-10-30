@@ -23,20 +23,20 @@ A browser-first free TTS recovery page that keeps the original MyanArts TTS Stud
 - Long cues are automatically split into readable upper/lower subtitle lines at a safe whitespace boundary; the example `ထိုရွာတွင် ဉာဏ်ကြီးသောသူတော်ကောင်းတစ်ဦး နေထိုင်ပါသည်။` becomes two lines without dropping text.
 - Burmese sentence punctuation stays attached to the preceding phrase, so `သေးငယ်သောရွာလေးတစ်ရွာ ရှိပါသည်။` becomes `သေးငယ်သောရွာလေးတစ်ရွာ` / `ရှိပါသည်။`, never `ရှိပါသည်` / `။`.
 - Burmese word boundaries are protected with `Intl.Segmenter("my", { granularity: "word" })`; words such as `အရက်` are never rendered as `အရ` / `က်`.
-- Every generated result validates that the first subtitle starts at `00:00:00,000`, cues stay ordered, and the last SRT end equals the measured MP3 duration exactly.
+- Every generated result validates ordered cue times and that the last SRT end equals the measured MP3 duration exactly. A provider-reported first-word offset is retained when the audio contains leading silence.
 - The v1 `AI မြန်မာ` group is restored with six Server 1 voices: Elias, Qianluo, Dama, Sofia, Muyao, and Faisal. They keep the v1 `+10%` speed / `0Hz` pitch defaults and require the user-entered Server 1 PIN in browser memory only.
 - Both `ကျည်ကွမ်ဒို` (EdgeTTS service) and `Azure AI` / `AI မြန်မာ` (Server 1 web route) call the same subtitle formatter and exact-duration timeline validation.
 - Cue order follows the ordered audio chunks.
-- Chunk boundaries use measured audio durations. Where provider word-boundary metadata exists, those real boundaries are used; the Fast HTTP endpoint does not expose word boundaries, so its SRT uses the original MyanArts phrase segmentation with proportional timing rather than invented word timing.
-- The final SRT cue is forced to the measured merged MP3 duration. The Server 1 path also scales its cue timeline to the measured merged duration before closing the final cue.
+- `ကျည်ကွန်ဒို` now calls the timed EdgeTTS endpoint, which returns the actual Microsoft Edge `WordBoundary` events with the MP3. SRT cue starts and intermediate ends come from those provider offsets, not character-count estimates.
+- Server 1 provider SRT cue timestamps are preserved when chunks are placed on the merged timeline. The implementation no longer stretches every cue across the whole file; it clamps out-of-range cues and sets only the final cue end to the measured merged MP3 duration.
 
 ## Verification
 
 ```text
 npm run build  PASS
-npm test       PASS — 4 files, 17 tests
+npm test       PASS — 6 files, 26 tests
 
-Latest live browser verification: `ကျည်ကွမ်ဒို/ခွန်` rendered the test as whole-word lines (`အရက်အရက်အရက်အရက်အရက်` / `အရက်အရက်ကို မသောက်သုံးသင့်ပါ။`); measured audio `3.096s` and SRT final end `00:00:03,096`. `Azure AI/Thiha` measured `2.592s` with final SRT `00:00:02,592`, and restored v1 `AI မြန်မာ/Elias` measured `2.580s` with final SRT `00:00:02,580`; all three runs passed word-safe rendering and had no generation error.
+Earlier live browser tests confirmed whole-word wrapping for `အရက်`, with MP3 and final-SRT durations matching. The updated provider-timed browser flow is being checked separately below.
 ```
 
 The old MyanArts UI was rebuilt on the published free link and checked in a real browser:
@@ -52,7 +52,7 @@ Two-line example live test: PASS — `ထိုရွာတွင် ဉာဏ�
 Two-line test audio/SRT end: PASS — 2.976s / `00:00:02,976`
 ```
 
-The EdgeTTS service live checks returned HTTP 200 `audio/mpeg` for both `my-MM-ThihaNeural` and `my-MM-NilarNeural`. SRT final timing is tied to measured merged audio duration.
+The deployed EdgeTTS service commit `f058db8` returned HTTP 200 from `/api/speech-with-timing`, including seven ordered Thiha word-boundary events and valid MP3 bytes. The live response included CORS permission for this static Studio origin. The sample's measured MP3 duration was `6,240 ms`; the last provider word ended at `5,608 ms` (the final SRT caption still closes at the measured audio end to keep the prior exact-duration contract).
 
 ## Limits
 
